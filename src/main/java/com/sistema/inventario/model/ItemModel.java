@@ -8,10 +8,11 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Entity
-@Table (name="item")
-@Data public class ItemModel {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
+@Table(name = "item")
+@Data
+public class ItemModel {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String description;
@@ -20,4 +21,7 @@ import java.math.BigDecimal;
     private String provider;
     private String status;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private CategoryModel category;
 }
