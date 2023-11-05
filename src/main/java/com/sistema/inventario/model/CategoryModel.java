@@ -9,7 +9,8 @@ import lombok.Data;
 public class CategoryModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long category_id;
+    @Column(unique = true)
     private String nameCategory;
     private String description;
     private String status;
