@@ -45,4 +45,5 @@ Para Correr la api debes ir al archivo inventarioApplication darle a run y ya de
 <code>http://localhost:8082/items/{item_id}</code>
 
 ## ENLACE DE POSTMAN
+
 <code>https://app.getpostman.com/join-team?invite_code=cb618aaf275a04338effa2c6c229b918&target_code=6b4e402874cb5be108b7f9fcadac03ec</code>
