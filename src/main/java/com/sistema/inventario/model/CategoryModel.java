@@ -15,9 +15,10 @@ public class CategoryModel {
     private Long category_id;
     @Column(unique = true)
     @NotBlank(message = "El nombre de la categoría no puede estar vacío")
-    @Size(max = 50, message = "El nombre de la categoría no puede tener más de 50 caracteres")
+    @Size(max = 50, min = 3,message = "El nombre de la categoría debe tener tener entre 3 y 50 caracteres")
     private String nameCategory;
     @NotBlank(message = "La descripción no puede estar vacía")
+    @Size(max = 300, message = "Maximo 300 caracteres en la descripción")
     private String description;
     @NotBlank(message = "El estado no puede estar vacío")
     private String status;
