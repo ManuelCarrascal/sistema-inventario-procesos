@@ -46,7 +46,7 @@ public class AddressService {
     public  List<AddressModel> getAllAddress(){
         List<AddressModel> address = (List<AddressModel>) addressRepository.findAll();
         if(address.isEmpty()){
-            throw  new RuntimeException("Address not found");
+            throw  new NotFoundException("Address not found");
         }
         return address;
     }

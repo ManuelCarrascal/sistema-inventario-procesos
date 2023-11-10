@@ -1,6 +1,7 @@
 package com.sistema.inventario.controller;
 
 import com.sistema.inventario.model.AddressModel;
+import com.sistema.inventario.model.CategoryModel;
 import com.sistema.inventario.service.AddressService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -33,19 +35,7 @@ public class AddressController {
     }
 
     @GetMapping("address")
-    public ResponseEntity getAll(){
-        return  ResponseEntity.ok(addressService.getAllAddress());
-    }
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
+    public ResponseEntity<List<AddressModel>> getAll(){
+        return ResponseEntity.ok(addressService.getAllAddress());
     }
 }

@@ -3,6 +3,7 @@ package com.sistema.inventario.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -14,15 +15,16 @@ public class CategoryModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long category_id;
     @Column(unique = true)
-    @NotBlank(message = "El nombre de la categoría no puede estar vacío")
-    @Size(max = 50, min = 3,message = "El nombre de la categoría debe tener tener entre 3 y 50 caracteres")
+    @NotBlank(message = "Category name cannot be empty")
+    @Size(max = 50, min = 3, message = "Category name must be between 3 and 50 characters")
     private String nameCategory;
-    @NotBlank(message = "La descripción no puede estar vacía")
-    @Size(max = 300, message = "Maximo 300 caracteres en la descripción")
+    @NotBlank(message = "Description cannot be empty")
+    @Size(max = 300, message = "Maximum 300 characters in description")
     private String description;
-    @NotBlank(message = "El estado no puede estar vacío")
+    @NotBlank(message = "Status cannot be empty")
     private String status;
-    @NotBlank(message = "El orden de visualización no puede estar vacío")
+    @NotBlank(message = "Display order cannot be empty")
+    @Pattern(regexp = "^[0-9]*$", message = "Display order must be a number")
     private String displayOrder;
 }
 

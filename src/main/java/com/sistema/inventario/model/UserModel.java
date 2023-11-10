@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
@@ -16,23 +17,27 @@ public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "firstName is required")
-    @Size(min= 1, max = 100,message = "firstName max 100 characters")
+    @NotBlank(message = "First name is required")
+    @Size(min= 1, max = 100, message = "First name must be between 1 and 100 characters")
     private String firstName;
+    @NotBlank(message = "Last name is required")
+    @Size(min= 1, max = 100, message = "Last name must be between 1 and 100 characters")
     private String lastName;
     @JsonIgnore
+    @NotEmpty(message = "At least one address is required")
     @OneToMany(mappedBy = "user")
     private List<AddressModel> address;
-    @NotBlank(message = "email is required")
-    @Email
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
     private String email;
-    @NotBlank(message = "phone is required")
-    @Size(min= 1, max = 16,message = "phone min 1 and max 16 characters")
+    @NotBlank(message = "Phone is required")
+    @Size(min= 1, max = 16, message = "Phone number must be between 1 and 16 characters")
+    @Pattern(regexp = "(^$|[0-9]{10})", message = "Phone number must be a valid number of 10 digits")
     private String phone;
-    @NotBlank(message = "password is required")
-    @Size(min= 8, max = 20,message = "password min 8 and max 20 characters")
+    @NotBlank(message = "Password is required")
+    @Size(min= 8, max = 20, message = "Password must be between 8 and 20 characters")
     private String password;
-    @NotBlank(message = "document is required")
-    @Size(min= 5, max = 20,message = "document min 5 and max 20 characters")
+    @NotBlank(message = "Document is required")
+    @Size(min= 5, max = 20, message = "Document must be between 5 and 20 characters")
     private String document;
 }
