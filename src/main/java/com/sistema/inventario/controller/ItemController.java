@@ -1,6 +1,7 @@
 package com.sistema.inventario.controller;
 
 import com.sistema.inventario.service.ItemService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import com.sistema.inventario.model.ItemModel;
@@ -15,7 +16,7 @@ public class ItemController {
     private ItemService itemService;
 
     @PostMapping("items")
-    public ResponseEntity <ItemModel> create(@RequestBody ItemModel item){
+    public ResponseEntity <ItemModel> create(@Valid @RequestBody ItemModel item){
         return new ResponseEntity<>(itemService.createItem(item), HttpStatus.CREATED);
     }
 
@@ -25,7 +26,7 @@ public class ItemController {
     }
 
     @PutMapping ("items/{id}")
-    public ResponseEntity <ItemModel> updateItem(@RequestBody ItemModel item, @PathVariable Long id){
+    public ResponseEntity <ItemModel> updateItem(@Valid @RequestBody ItemModel item, @PathVariable Long id){
         return ResponseEntity.ok(itemService.updateItem(item , id));
     }
 

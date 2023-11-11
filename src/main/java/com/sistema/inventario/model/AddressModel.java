@@ -3,12 +3,12 @@ package com.sistema.inventario.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
 @Data
+@Table(name = "address")
 public class AddressModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +27,6 @@ public class AddressModel {
     private String postalCode;
     @JsonIgnore
     private Boolean status = Boolean.TRUE;
-    @NotNull(message = "User is required")
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
     private  UserModel user;

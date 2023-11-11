@@ -38,7 +38,7 @@ public class AddressService {
     public  AddressModel getAddressById(Long id){
         Optional<AddressModel> address = addressRepository.findById(id);
         if(address.isEmpty()){
-            throw  new RuntimeException("Address not found");
+            throw  new NotFoundException("Address not found");
         }
         return address.get();
     }

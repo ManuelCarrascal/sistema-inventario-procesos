@@ -2,6 +2,7 @@ package com.sistema.inventario.controller;
 
 import com.sistema.inventario.model.UserModel;
 import com.sistema.inventario.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @PostMapping("users")
-    public ResponseEntity<UserModel> create(@RequestBody UserModel user){
+    public ResponseEntity<UserModel> create(@Valid @RequestBody UserModel user){
 
         return new ResponseEntity(userService.createUser(user), HttpStatus.CREATED);
     }
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PutMapping("users/{id}")
-    public ResponseEntity<UserModel> update(@RequestBody UserModel user, @PathVariable Long id){
+    public ResponseEntity<UserModel> update(@Valid @RequestBody UserModel user, @PathVariable Long id){
         return ResponseEntity.ok(userService.updateUser(user,id));
     }
 

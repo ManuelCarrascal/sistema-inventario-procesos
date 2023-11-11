@@ -59,7 +59,7 @@ public class CategoryService {
     }
 
     public List<CategoryModel> findAllCategory(){
-        List<CategoryModel> categories = (List<CategoryModel>) categoryRepositories.findAll();
+        List<CategoryModel> categories =  categoryRepositories.findAll();
         if (categories.isEmpty()) {
             throw new NotFoundException("No categories found");
         }

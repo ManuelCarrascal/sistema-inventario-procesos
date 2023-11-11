@@ -1,5 +1,6 @@
 package com.sistema.inventario.service;
 
+import com.sistema.inventario.exceptions.AlreadyExistsException;
 import com.sistema.inventario.exceptions.NotFoundException;
 import com.sistema.inventario.model.UserModel;
 import com.sistema.inventario.repository.UserRepository;
@@ -15,6 +16,10 @@ public class UserService {
     private UserRepository userRepository;
 
     public UserModel createUser(UserModel user){
+        List<UserModel> existingUsers = userRepository.findByDocument(user.getDocument());
+        if(!existingUsers.isEmpty()){
+            throw new AlreadyExistsException("User  with name " + user.getFirstName()+" "+user.getLastName() +" and Document "+user.getDocument()+ " already exists");
+        };
         return userRepository.save(user);
     }
 
@@ -31,7 +36,13 @@ public class UserService {
 
 
     public UserModel updateUser(UserModel user, Long id){
-        if(userRepository.existsById(id)){
+        if(!userRepository.existsById(id)){
+            throw new NotFoundException("User not Found");
+        }
+        List<UserModel> existingUsers = userRepository.findByDocument(user.getDocument());
+        if(!existingUsers.isEmpty()){
+            throw new AlreadyExistsException("User  with name " + user.getFirstName()+" "+user.getLastName() +" and Document "+user.getDocument()+ " already exists");
+        };
             UserModel userBd = userRepository.findById(id).get();
             userBd.setFirstName(user.getFirstName());
             userBd.setLastName(user.getLastName());
@@ -39,19 +50,24 @@ public class UserService {
             userBd.setEmail(user.getEmail());
             userBd.setPhone(user.getPhone());
             return userRepository.save(userBd);
-        }
-        return null;
     }
 
     public Boolean deleteUserById(Long id){
         if(userRepository.existsById(id)){
             userRepository.deleteById(id);
             return true;
+        }else{
+            throw new NotFoundException("User not Found");
         }
-        return false;
+
     }
 
     public List<UserModel> findAllUsers(){
-        return (List<UserModel>) userRepository.findAll();
+       List<UserModel> users = userRepository.findAll();
+       if(users.isEmpty()){
+           throw  new NotFoundException("User not found");
+
+       }
+       return users;
     }
 }

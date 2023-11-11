@@ -25,7 +25,7 @@ public class AddressController {
         return new ResponseEntity(addressService.createAddress(address,idUser), HttpStatus.CREATED);
     }
     @PutMapping("address/{id}")
-    public ResponseEntity disabled(@PathVariable Long id){
+    public ResponseEntity disabled(@Valid @PathVariable Long id){
         return ResponseEntity.ok(addressService.disabledAddress(id));
     }
 

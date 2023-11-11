@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -13,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "user")
 public class UserModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,6 @@ public class UserModel {
     @Size(min= 1, max = 100, message = "Last name must be between 1 and 100 characters")
     private String lastName;
     @JsonIgnore
-    @NotEmpty(message = "At least one address is required")
     @OneToMany(mappedBy = "user")
     private List<AddressModel> address;
     @NotBlank(message = "Email is required")
@@ -39,5 +38,6 @@ public class UserModel {
     private String password;
     @NotBlank(message = "Document is required")
     @Size(min= 5, max = 20, message = "Document must be between 5 and 20 characters")
+    @Column(unique = true)
     private String document;
 }
