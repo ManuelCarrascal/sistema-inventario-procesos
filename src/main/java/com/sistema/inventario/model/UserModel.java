@@ -6,14 +6,24 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
 
 @Entity
 @Data
 @Table(name = "user")
-public class UserModel {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class UserModel implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,6 +38,7 @@ public class UserModel {
     private List<AddressModel> address;
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
+    @Column(unique = true, nullable = false)
     private String email;
     @NotBlank(message = "Phone is required")
     @Size(min= 1, max = 16, message = "Phone number must be between 1 and 16 characters")
@@ -40,4 +51,35 @@ public class UserModel {
     @Size(min= 5, max = 20, message = "Document must be between 5 and 20 characters")
     @Column(unique = true)
     private String document;
+    Role role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority((role.name())));
+    }
+
+    @Override
+    public String getUsername() {
+        return email; //pendiente
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
