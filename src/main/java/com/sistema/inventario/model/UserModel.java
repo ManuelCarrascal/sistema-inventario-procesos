@@ -1,11 +1,9 @@
 package com.sistema.inventario.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sistema.inventario.util.Role;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,13 +15,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
 @Data
+@Entity
 @Table(name = "user")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UserModel implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,23 +43,24 @@ public class UserModel implements UserDetails {
     @Size(min= 1, max = 16, message = "Phone number must be between 1 and 16 characters")
     @Pattern(regexp = "(^$|[0-9]{10})", message = "Phone number must be a valid number of 10 digits")
     private String phone;
-    @NotBlank(message = "Password is required")
-    @Size(min= 8, max = 20, message = "Password must be between 8 and 20 characters")
+    @NotNull(message = "Password is required")
+    @Size(min = 8, max = 255,message = "password min 8 characters and max 255")
     private String password;
     @NotBlank(message = "Document is required")
+    @Column(unique = true, nullable = false)
     @Size(min= 5, max = 20, message = "Document must be between 5 and 20 characters")
-    @Column(unique = true)
     private String document;
-    Role role;
+    @Enumerated( EnumType.STRING)
+    private Role role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority((role.name())));
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
     public String getUsername() {
-        return email; //pendiente
+        return this.getEmail();
     }
 
     @Override
@@ -77,6 +77,10 @@ public class UserModel implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<AddressModel> addressList;
 
     @Override
     public boolean isEnabled() {

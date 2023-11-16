@@ -1,9 +1,9 @@
 package com.sistema.inventario.service;
 
-import com.sistema.inventario.exceptions.NotFoundException;
+import com.sistema.inventario.exception.NotFoundException;
+import com.sistema.inventario.repository.AddressRepository;
 import com.sistema.inventario.model.AddressModel;
 import com.sistema.inventario.model.UserModel;
-import com.sistema.inventario.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +12,10 @@ import java.util.Optional;
 
 @Service
 public class AddressService {
+
     @Autowired
     private AddressRepository addressRepository;
+
     @Autowired
     private UserService userService;
 
@@ -46,7 +48,7 @@ public class AddressService {
     public  List<AddressModel> getAllAddress(){
         List<AddressModel> address = (List<AddressModel>) addressRepository.findAll();
         if(address.isEmpty()){
-            throw  new NotFoundException("Address not found");
+            throw  new NotFoundException("Addresses not found");
         }
         return address;
     }

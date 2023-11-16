@@ -1,4 +1,4 @@
-package com.sistema.inventario.exceptions;
+package com.sistema.inventario.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +27,7 @@ public class CustomExceptionHandler {
         response.put("Message: ", ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
-      @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {

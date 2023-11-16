@@ -1,4 +1,4 @@
-package com.sistema.inventario.controller;
+package com.sistema.inventario.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequest {
-    String email;
-    String password;
-
+    private String email;
+    private String password;
 }
