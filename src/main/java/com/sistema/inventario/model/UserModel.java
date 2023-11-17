@@ -40,7 +40,6 @@ public class UserModel implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
     @NotBlank(message = "Phone is required")
-    @Size(min= 1, max = 16, message = "Phone number must be between 1 and 16 characters")
     @Pattern(regexp = "(^$|[0-9]{10})", message = "Phone number must be a valid number of 10 digits")
     private String phone;
     @NotNull(message = "Password is required")
