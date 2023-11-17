@@ -1,9 +1,9 @@
 package com.sistema.inventario.service;
 
-import com.sistema.inventario.exceptions.AlreadyExistsException;
-import com.sistema.inventario.exceptions.NotFoundException;
+import com.sistema.inventario.exception.AlreadyExistsException;
+import com.sistema.inventario.exception.NotFoundException;
+import com.sistema.inventario.repository.CategoryRepository;
 import com.sistema.inventario.model.CategoryModel;
-import com.sistema.inventario.repository.CategoryRepositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CategoryService {
+public class CategoryService{
     @Autowired
-    private CategoryRepositories categoryRepositories;
+    private CategoryRepository categoryRepositories;
 
     public CategoryModel createItem(CategoryModel category){
         if (categoryRepositories.findByNameCategory(category.getNameCategory()).isPresent()) {
@@ -39,12 +39,12 @@ public class CategoryService {
             throw new AlreadyExistsException("Category with name " + category.getNameCategory() + " already exists");
         }
         CategoryModel categoryDB = categoryRepositories.findById(id).get();
-            categoryDB.setNameCategory(category.getNameCategory());
-            categoryDB.setDescription(category.getDescription());
-            categoryDB.setStatus(category.getStatus());
-            categoryDB.setDisplayOrder(category.getDisplayOrder());
+        categoryDB.setNameCategory(category.getNameCategory());
+        categoryDB.setDescription(category.getDescription());
+        categoryDB.setStatus(category.getStatus());
+        categoryDB.setDisplayOrder(category.getDisplayOrder());
 
-            return categoryRepositories.save(categoryDB);
+        return categoryRepositories.save(categoryDB);
 
     }
 
@@ -64,5 +64,7 @@ public class CategoryService {
             throw new NotFoundException("No categories found");
         }
         return categories;
-    }
+}
+
+
 }

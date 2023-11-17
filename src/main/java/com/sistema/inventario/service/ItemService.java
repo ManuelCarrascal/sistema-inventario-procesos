@@ -1,17 +1,18 @@
 package com.sistema.inventario.service;
 
-import com.sistema.inventario.exceptions.AlreadyExistsException;
-import com.sistema.inventario.exceptions.NotFoundException;
-import com.sistema.inventario.model.ItemModel;
+import com.sistema.inventario.exception.AlreadyExistsException;
 import com.sistema.inventario.repository.ItemRepository;
+import com.sistema.inventario.exception.NotFoundException;
+import com.sistema.inventario.model.ItemModel;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ItemService {
+
     @Autowired
     private ItemRepository itemRepository;
 
@@ -38,14 +39,14 @@ public class ItemService {
         if (existingItemOptional.isPresent() && !existingItemOptional.get().getId().equals(id)) {
             throw new AlreadyExistsException("Item with name " + item.getName() + " already exists");
         }
-            ItemModel itemDB = itemRepository.findById(id).get();
-            itemDB.setName(item.getName());
-            itemDB.setDescription(item.getDescription());
-            itemDB.setQuantity(item.getQuantity());
-            itemDB.setPrice(item.getPrice());
-            itemDB.setProvider(item.getProvider());
-            itemDB.setStatus(item.getStatus());
-            return itemRepository.save(itemDB);
+        ItemModel itemDB = itemRepository.findById(id).get();
+        itemDB.setName(item.getName());
+        itemDB.setDescription(item.getDescription());
+        itemDB.setQuantity(item.getQuantity());
+        itemDB.setPrice(item.getPrice());
+        itemDB.setProvider(item.getProvider());
+        itemDB.setStatus(item.getStatus());
+        return itemRepository.save(itemDB);
     }
     public Boolean deleteItemById(Long id){
         if(itemRepository.existsById(id)){
@@ -62,8 +63,7 @@ public class ItemService {
         if(items.isEmpty()){
             throw new NotFoundException("No items found");
         }
-        return  items;
+        return items;
     }
-
 
 }
