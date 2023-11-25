@@ -1,7 +1,7 @@
 package com.sistema.inventario.controller;
 
-import com.sistema.inventario.auth.AuthResponse;
-import com.sistema.inventario.auth.LoginRequest;
+import com.sistema.inventario.dto.AuthResponse;
+import com.sistema.inventario.dto.LoginRequest;
 import com.sistema.inventario.auth.RegisterRequest;
 import com.sistema.inventario.service.AuthService;
 

@@ -3,19 +3,18 @@ package com.sistema.inventario.service;
 import com.sistema.inventario.exception.AlreadyExistsException;
 import com.sistema.inventario.exception.AuthenticationFailedException;
 import com.sistema.inventario.exception.NotFoundException;
-import com.sistema.inventario.repository.AuthRepository;
-import com.sistema.inventario.auth.AuthResponse;
-import com.sistema.inventario.auth.LoginRequest;
+import com.sistema.inventario.dto.AuthResponse;
+import com.sistema.inventario.dto.LoginRequest;
 import com.sistema.inventario.auth.RegisterRequest;
 import com.sistema.inventario.model.UserModel;
-import com.sistema.inventario.util.ExceptionsConstants;
-import com.sistema.inventario.util.Role;
+import com.sistema.inventario.repository.UserRepository;
+import com.sistema.inventario.util.Constants;
+import com.sistema.inventario.model.RoleModel;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,32 +26,34 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AuthRepository authRepository;
+    private final UserRepository userRepository;
+
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse login(LoginRequest request) {
-       try {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-    } catch (BadCredentialsException e) {
-        throw new AuthenticationFailedException("Invalid username or password");
-    }
-    UserDetails user = authRepository.findByEmail(request.getEmail()).
-            orElseThrow(() -> new NotFoundException(ExceptionsConstants.CREDENTIAL_INVALID.getMessage()));
-    String token = jwtService.getToken(user);
-    return AuthResponse.builder().token(token).build();
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    request.getEmail(), request.getPassword()));
+        } catch (Exception e) {
+            throw new AuthenticationFailedException(Constants.CREDENTIAL_INVALID.getMessage());
+        }
+        UserDetails user = userRepository.findByEmail(request.getEmail()).
+                orElseThrow(() -> new NotFoundException(Constants.CREDENTIAL_INVALID.getMessage()));
+        String token = jwtService.getToken(user);
+        return AuthResponse.builder().token(token).build();
     }
 
     public AuthResponse register(@Valid RegisterRequest request) {
-        Optional<UserModel> existingUserByEmail = authRepository.findByEmail(request.getEmail());
+        Optional<UserModel> existingUserByEmail = userRepository.findByEmail(request.getEmail());
         if (existingUserByEmail.isPresent()) {
-            throw new AlreadyExistsException(ExceptionsConstants.USER_ALREADY_EXISTS.getMessage());
+            throw new AlreadyExistsException(Constants.USER_ALREADY_EXISTS.getMessage());
         }
     
-        Optional<UserModel> existingUserByDocument = authRepository.findByDocument(request.getDocument());
+        Optional<UserModel> existingUserByDocument = userRepository.findByDocument(request.getDocument());
         if (existingUserByDocument.isPresent()) {
-            throw new AlreadyExistsException(ExceptionsConstants.DOCUMENT_ALREADY_EXISTS.getMessage());
+            throw new AlreadyExistsException(Constants.DOCUMENT_ALREADY_EXISTS.getMessage());
         }
     
         UserModel userModel = UserModel.builder()
@@ -62,12 +63,9 @@ public class AuthService {
                 .document(request.getDocument())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
+                .roleModel(RoleModel.USER)
                 .build();
-
-
-
-        authRepository.save(userModel);
+        userRepository.save(userModel);
         return AuthResponse.builder().token(jwtService.getToken(userModel)).build();
     }
 }

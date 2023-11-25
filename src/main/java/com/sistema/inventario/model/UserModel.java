@@ -1,7 +1,6 @@
 package com.sistema.inventario.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sistema.inventario.util.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -50,11 +49,11 @@ public class UserModel implements UserDetails {
     @Size(min= 5, max = 20, message = "Document must be between 5 and 20 characters")
     private String document;
     @Enumerated( EnumType.STRING)
-    private Role role;
+    private RoleModel roleModel;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(roleModel.name()));
     }
 
     @Override
