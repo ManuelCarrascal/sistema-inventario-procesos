@@ -38,7 +38,6 @@ public class UserModel implements UserDetails {
     @Email(message = "Email should be valid")
     @Column(unique = true, nullable = false)
     private String email;
-    @NotBlank(message = "Phone is required")
     @Pattern(regexp = "(^$|[0-9]{10})", message = "Phone number must be a valid number of 10 digits")
     private String phone;
     @NotNull(message = "Password is required")

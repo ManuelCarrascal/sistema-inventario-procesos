@@ -5,7 +5,6 @@ import com.sistema.inventario.exception.AuthenticationFailedException;
 import com.sistema.inventario.exception.NotFoundException;
 import com.sistema.inventario.dto.AuthResponse;
 import com.sistema.inventario.dto.LoginRequest;
-import com.sistema.inventario.auth.RegisterRequest;
 import com.sistema.inventario.model.UserModel;
 import com.sistema.inventario.repository.UserRepository;
 import com.sistema.inventario.util.Constants;
@@ -45,7 +44,7 @@ public class AuthService {
         return AuthResponse.builder().token(token).build();
     }
 
-    public AuthResponse register(@Valid RegisterRequest request) {
+    public AuthResponse register(@Valid UserModel request) {
         Optional<UserModel> existingUserByEmail = userRepository.findByEmail(request.getEmail());
         if (existingUserByEmail.isPresent()) {
             throw new AlreadyExistsException(Constants.USER_ALREADY_EXISTS.getMessage());
