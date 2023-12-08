@@ -45,8 +45,7 @@ public class UserService {
     }
 
   public List<UserModel> findAllUsers(){
-        List<UserModel> users = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                                         .collect(Collectors.toList());
+        List<UserModel> users = StreamSupport.stream(userRepository.findAll().spliterator(), false).collect(Collectors.toList());
         if(users.isEmpty()){
             throw new NotFoundException(Constants.USERS_NOT_FOUND.getMessage());
         }
@@ -54,18 +53,25 @@ public class UserService {
     }
 
     public UserModel updateUser(Long id, UserModel userModelReq){
-        Optional<UserModel> existingUser = userRepository.findByEmail(userModelReq.getEmail());
-        if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
+        Optional<UserModel> existingUserByEmail = userRepository.findByEmail(userModelReq.getEmail());
+        if (existingUserByEmail.isPresent() && !existingUserByEmail.get().getId().equals(id)) {
             throw new AlreadyExistsException(Constants.USER_ALREADY_EXISTS.getMessage());
         }
-    
+
+        Optional<UserModel> existingUserByDocument = userRepository.findByDocument(userModelReq.getDocument());
+        if (existingUserByDocument.isPresent() && !existingUserByDocument.get().getId().equals(id)) {
+            throw new AlreadyExistsException(Constants.DOCUMENT_ALREADY_EXISTS.getMessage());
+        }
+
         Optional<UserModel> userToUpdateOpt = userRepository.findById(id);
         if (!userToUpdateOpt.isPresent()) {
             throw new NotFoundException(Constants.USER_NOT_FOUND.getMessage());
         }
-    
+
         UserModel userToUpdate = userToUpdateOpt.get();
         userToUpdate.setEmail(userModelReq.getEmail());
+        userToUpdate.setFirstName(userModelReq.getFirstName());
+        userToUpdate.setLastName(userModelReq.getLastName());
         userToUpdate.setPassword(passwordEncoder.encode(userModelReq.getPassword()));
         userToUpdate.setRoleModel(RoleModel.USER);
         return userRepository.save(userToUpdate);

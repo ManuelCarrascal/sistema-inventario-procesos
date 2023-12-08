@@ -1,6 +1,8 @@
 package com.sistema.inventario.service;
 
 import com.sistema.inventario.exception.AlreadyExistsException;
+import com.sistema.inventario.model.CategoryModel;
+import com.sistema.inventario.repository.CategoryRepository;
 import com.sistema.inventario.repository.ItemRepository;
 import com.sistema.inventario.exception.NotFoundException;
 import com.sistema.inventario.model.ItemModel;
@@ -16,6 +18,8 @@ public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
+    @Autowired
+    private CategoryRepository categoryRepository;
     public ItemModel createItem (ItemModel item){
         if (itemRepository.findByName(item.getName()).isPresent()) {
             throw new AlreadyExistsException("Item with name " + item.getName() + " already exists");
@@ -46,6 +50,12 @@ public class ItemService {
         itemDB.setPrice(item.getPrice());
         itemDB.setProvider(item.getProvider());
         itemDB.setStatus(item.getStatus());
+        // Busca la categoría por id y la asigna al producto
+        Long categoryId = item.getCategory().getCategory_id();
+        CategoryModel category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException("Category not found"));
+        itemDB.setCategory(category);
+
         return itemRepository.save(itemDB);
     }
     public Boolean deleteItemById(Long id){
