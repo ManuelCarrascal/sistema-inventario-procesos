@@ -30,7 +30,6 @@ public class CategoryModel {
     @NotBlank(message = "Display order cannot be empty")
     @Pattern(regexp = "^[0-9]*$", message = "Display order must be a number")
     private String displayOrder;
-    @OneToMany(mappedBy = "category")
-    private Set<ItemModel> items;
+
 
 }
