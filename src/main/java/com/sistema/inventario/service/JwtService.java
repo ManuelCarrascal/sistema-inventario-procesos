@@ -27,7 +27,7 @@ public class JwtService {
     }
 
     private String getToken(Map<String, Object> extraClaims, UserDetails user){
-        return Jwts.builder().
+          return Jwts.builder().
                 setClaims(extraClaims).
                 setSubject(user.getUsername()).
                 setIssuedAt(new Date(System.currentTimeMillis())).
