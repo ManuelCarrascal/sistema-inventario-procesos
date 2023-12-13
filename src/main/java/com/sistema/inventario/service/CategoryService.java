@@ -4,6 +4,9 @@ import com.sistema.inventario.exception.AlreadyExistsException;
 import com.sistema.inventario.exception.NotFoundException;
 import com.sistema.inventario.repository.CategoryRepository;
 import com.sistema.inventario.model.CategoryModel;
+import com.sistema.inventario.model.ItemModel;
+
+import com.sistema.inventario.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +17,17 @@ import java.util.Optional;
 public class CategoryService{
     @Autowired
     private CategoryRepository categoryRepositories;
+    @Autowired
+    private ItemRepository itemRepository;
 
-    public CategoryModel createItem(CategoryModel category){
+    public CategoryModel createCategory(CategoryModel category){
         if (categoryRepositories.findByNameCategory(category.getNameCategory()).isPresent()) {
             throw new AlreadyExistsException("Category with name " + category.getNameCategory() + " already exists");
         }
         return categoryRepositories.save(category);
     }
 
-    public CategoryModel getItemByid(Long id){
+    public CategoryModel getCategoryByid(Long id){
         Optional<CategoryModel> category = categoryRepositories.findById(id);
         if(category.isEmpty()){
             throw new NotFoundException("Category not found");
@@ -30,7 +35,7 @@ public class CategoryService{
         return category.get();
     }
 
-    public CategoryModel updateItem(CategoryModel category, Long id){
+    public CategoryModel updateCategory(CategoryModel category, Long id){
         if(!categoryRepositories.existsById(id)){
             throw new NotFoundException("Category not found");
         }
@@ -48,15 +53,32 @@ public class CategoryService{
 
     }
 
-    public boolean deleteCategoryById(Long id){
-        if(categoryRepositories.existsById(id)){
-            categoryRepositories.deleteById(id);
-            return true;
+    public void deleteCategory(Long id){
+        Optional<CategoryModel> unassignedCategoryOptional = categoryRepositories.findByNameCategory("sin asignar");
+        CategoryModel unassignedCategory;
+        if(!unassignedCategoryOptional.isPresent()) {
+            unassignedCategory = new CategoryModel();
+            unassignedCategory.setNameCategory("sin asignar");
+            unassignedCategory.setDescription("Categoría para items sin asignar");
+            unassignedCategory.setStatus("Activo");
+            unassignedCategory.setDisplayOrder("999");
+            categoryRepositories.save(unassignedCategory);
         } else {
-            throw new NotFoundException("Category not found");
+            unassignedCategory = unassignedCategoryOptional.get();
         }
-
+        
+        CategoryModel categoryToDelete = categoryRepositories.findById(id)
+            .orElseThrow(() -> new RuntimeException("La categoría con id " + id + " no existe"));
+        
+        List<ItemModel> items = itemRepository.findByCategory(categoryToDelete);
+        for(ItemModel item : items){
+            item.setCategory(unassignedCategory);
+            itemRepository.save(item);
+        }
+        
+        categoryRepositories.delete(categoryToDelete);
     }
+
 
     public List<CategoryModel> findAllCategory(){
         List<CategoryModel> categories =  categoryRepositories.findAll();
